@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>IT Incident Report</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container report-container">
+      <h2>Submit IT Incident Report</h2>
+      <form id="reportForm">
+        <label for="problemType">Problem Type:</label>
+        <select name="problemType" id="problemType" required>
+          <option value="Hardware">Hardware</option>
+          <option value="Software">Software</option>
+          <option value="IT Support">IT Support</option>
+          <option value="ERP">ERP</option>
+          <!-- Add other options as needed -->
+        </select>
+
+        <label for="severity">Severity (1 to 5):</label>
+        <select name="severity" id="severity" required>
+          <option value="1">1 (Couple of hours)</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5 (Couple of days)</option>
+        </select>
+
+        <label for="assignedStaff">Assign to Staff:</label>
+        <select name="assignedStaff" id="assignedStaff" required>
+          <!-- In a real app, dynamically populate with staff from the database -->
+          <option value="1">Staff 1</option>
+          <option value="2">Staff 2</option>
+          <option value="3">Staff 3</option>
+        </select>
+
+        <label for="description">Incident Description:</label>
+        <textarea name="description" id="description" required></textarea>
+
+        <label for="reporterName">Your Name:</label>
+        <input type="text" name="reporterName" id="reporterName" required />
+
+        <label for="reporterDept">Department:</label>
+        <input type="text" name="reporterDept" id="reporterDept" required />
+
+        <button type="submit">Submit Report</button>
+      </form>
+      <div id="reportMessage"></div>
+    </div>
+    <script src="report.js"></script>
+  </body>
+</html>
