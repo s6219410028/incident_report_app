@@ -173,38 +173,28 @@ $hardwareItems = $stmt->fetchAll();
             background-color: #f2f2f2;
         }
     </style>
+    <!-- jQuery and DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
-    <!-- Sidebar (fixed at left) -->
     <div class="sidebar" id="sidebar">
-        <h2 id="toggleSidebar"><i class="fas fa-bars"></i></h2>
-        <a href="dashboard.php">
-            <i class="fas fa-tachometer-alt"></i>
-            <span class="link-text">Dashboard</span>
-        </a>
-        <a href="incident_list.php">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span class="link-text">Incident List</span>
-        </a>
-        <a href="employee_list.php">
-            <i class="fas fa-users"></i>
-            <span class="link-text">Employee List</span>
-        </a>
-        <a href="hardware_list.php">
-            <i class="fas fa-desktop"></i>
-            <span class="link-text">Hardware List</span>
-        </a>
-        <a href="logout.php">
-            <i class="fas fa-sign-out-alt"></i>
-            <span class="link-text">Logout</span>
-        </a>
+        <h2><i class="fas fa-bars"></i></h2>
+        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span class="link-text">Dashboard</span></a>
+        <a href="incident_list.php"><i class="fas fa-exclamation-triangle"></i><span class="link-text">Incident
+                List</span></a>
+        <a href="employee_list.php"><i class="fas fa-users"></i><span class="link-text">Employee List</span></a>
+        <a href="hardware_list.php"><i class="fas fa-desktop"></i><span class="link-text">Hardware List</span></a>
+        <a href="report_incident.php"><i class="fas fa-file"></i><span class="link-text">Report Incident</span></a>
+        <a href="closed_incidents.php"><i class="fas fa-circle-xmark"></i><span class="link-text">Closed
+                Incidents</span></a>
+        <a href="logout.php"><i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span></a>
     </div>
-    <!-- Main container -->
     <div class="container" id="container">
         <div class="main-content">
-            <h1>Computer & Hardware List</h1>
-            <!-- Form to insert new hardware -->
+            <h1>Hardware List</h1>
+            <!-- Hardware Form -->
             <form class="hardware-form" action="hardware_list.php" method="post">
                 <h3>Add New Hardware</h3>
                 <input type="text" name="name" placeholder="Hardware Name" required>
@@ -212,66 +202,50 @@ $hardwareItems = $stmt->fetchAll();
                 <textarea name="description" placeholder="Description" rows="3" required></textarea>
                 <button type="submit">Add Hardware</button>
             </form>
-            <!-- Table to display hardware items -->
-            <?php if (count($hardwareItems) > 0): ?>
-                <table>
-                    <thead>
+            <!-- Hardware Table -->
+            <table id="hardwareTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Hardware Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($hardwareItems as $item): ?>
                         <tr>
-                            <th>ID</th>
-                            <th>Hardware Name</th>
-                            <th>Type</th>
-                            <th>Description</th>
+                            <td><?php echo htmlspecialchars($item['id']); ?></td>
+                            <td><?php echo htmlspecialchars($item['name']); ?></td>
+                            <td><?php echo htmlspecialchars($item['type']); ?></td>
+                            <td><?php echo htmlspecialchars($item['description']); ?></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($hardwareItems as $item): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($item['id']); ?></td>
-                                <td><?php echo htmlspecialchars($item['name']); ?></td>
-                                <td><?php echo htmlspecialchars($item['type']); ?></td>
-                                <td><?php echo htmlspecialchars($item['description']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p>No hardware items found.</p>
-            <?php endif; ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
     <script>
-        // Retrieve sidebar state from localStorage
-        const sidebar = document.getElementById('sidebar');
-        const container = document.getElementById('container');
-        const toggleSidebar = document.getElementById('toggleSidebar');
-
-        function setSidebarState(expanded) {
-            if (expanded) {
+        $(document).ready(function () {
+            $('#hardwareTable').DataTable({
+                "order": [[0, "asc"]],
+                "pageLength": 10
+            });
+        });
+        // Sidebar state handling
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.getElementById('container');
+            const isExpanded = localStorage.getItem('sidebarExpanded') === 'true';
+            if (isExpanded) {
                 sidebar.classList.add('expanded');
                 container.classList.add('expanded');
-                localStorage.setItem('sidebarState', 'expanded');
-            } else {
-                sidebar.classList.remove('expanded');
-                container.classList.remove('expanded');
-                localStorage.setItem('sidebarState', 'collapsed');
             }
-        }
-
-        // On page load, check localStorage for the sidebar state
-        const storedState = localStorage.getItem('sidebarState');
-        if (storedState === 'expanded') {
-            setSidebarState(true);
-        } else {
-            setSidebarState(false);
-        }
-
-        // Toggle sidebar state when clicking the toggle button
-        toggleSidebar.addEventListener('click', function () {
-            if (sidebar.classList.contains('expanded')) {
-                setSidebarState(false);
-            } else {
-                setSidebarState(true);
-            }
+            sidebar.querySelector('h2').addEventListener('click', function () {
+                const expanded = sidebar.classList.toggle('expanded');
+                container.classList.toggle('expanded');
+                localStorage.setItem('sidebarExpanded', expanded);
+            });
         });
     </script>
 </body>
